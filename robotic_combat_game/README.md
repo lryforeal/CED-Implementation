@@ -1,4 +1,4 @@
-# CED
+# 3vs3 Graph-Based Robotic Combat Game
 
 ## Code Environment
 - **Python Version**: 3.10  
@@ -19,7 +19,7 @@
 | matplotlib      | 3.10.1   |
 
 ## How to run
-### Generate offline game trajectories from the base policy
+### Generate offline game data using the base policy
 
 ```
 python generate_buffer.py
