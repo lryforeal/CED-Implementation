@@ -19,23 +19,23 @@
 | matplotlib      | 3.10.1   |
 
 ## How to run
-### Generate buffer data
+### Generate offline game trajectories from the base policy
 
 ```
 python generate_buffer.py
 ```
 
-### Run CED code
+### Run CED (Constrained Exploitability Descent)
 ```
 python driver_ced.py
 ```
 
-### Run OSP code
+### Run OSP (Offline Self-Play)
 ```
 python driver_osp.py
 ```
 
-### Run BC code
+### Run BC (Behavior Cloning)
 ```
 python driver_bc.py
 ```
