@@ -1,6 +1,6 @@
 # Constrained Exploitability Descent (CED)
 
-This repository contains an offline reinforcement learning algorithm for finding mixed-strategy Nash equilibria in adversarial Markov games. The algorithm is proposed in the paper "Constrained Exploitability Descent: An Offline Reinforcement Learning Method for Finding Mixed-Strategy Nash Equilibrium" [1] at ICML 2025. The game enviroments and algorithm implementations align with the descriptions in the paper. If you have any questions, please contact lurunyu17@mails.ucas.ac.cn.
+This repository contains an offline reinforcement learning algorithm for finding mixed-strategy Nash equilibria in adversarial Markov games. The algorithm is proposed in the paper "Constrained Exploitability Descent: An Offline Reinforcement Learning Method for Finding Mixed-Strategy Nash Equilibrium" [1] at ICML 2025. The game environments and algorithm implementations align with the descriptions in the paper. If you have any questions, please contact lurunyu17@mails.ucas.ac.cn.
 
 Reference:
 
