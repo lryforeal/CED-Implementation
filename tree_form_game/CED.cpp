@@ -2,15 +2,15 @@
 
 using namespace std;
 
-const double T=1000;										// Maximum iteration 
-const double alpha=0.005;									// Learning rate
-const double delta=1.0;										// Direct policy constraint parameter (chosen from (0.5,1.0])
-const double epsilon=0.1;									// Indirect policy penalty paramter
+const double T=1000;								// Maximum iteration 
+const double alpha=0.01;							// Learning rate
+const double delta=1.0;								// Direct policy constraint parameter (chosen from (0.5,1.0])
+const double epsilon=0.1;							// Indirect policy penalty paramter
 const int stage_num=3;
 const int action_max=5;
 const int action_num[stage_num]={2,2,5};
 
-const double PM[5][5]={										// Payoff matrix at Stage 3 (5-action RPS game)
+const double PM[5][5]={								// Payoff matrix at Stage 3 (5-action RPS game)
 	0,-1,1,-1,1,
 	1,0,-1,-1,1,
 	-1,1,0,-1,1,
@@ -20,11 +20,12 @@ const double PM[5][5]={										// Payoff matrix at Stage 3 (5-action RPS game)
 
 double mu_beta[stage_num][action_max];
 double nu_beta[stage_num][action_max];
-double l[stage_num][action_max],r[stage_num][action_max];	// [l,r] is the range of direct policy constraint
+double l[stage_num][action_max],r[stage_num][action_max];			// [l,r] is the range of direct policy constraint
 double Q[stage_num][action_max][action_max];
 double R[stage_num][action_max][action_max];
 double mu[stage_num][action_max];
 double nu[stage_num][action_max];
+double rho[stage_num];
 
 void init(){
 	R[0][0][0]=1,R[0][0][1]=0,R[0][1][0]=-2,R[0][1][1]=4;
@@ -35,17 +36,21 @@ void init(){
 	for (int i=0;i<stage_num;i++){
 		for (int j=0;j<action_num[i];j++){
 			if (i==2){
-				if (j==0) mu_beta[i][j]=0.6;				// Behavior policy: mu=(0.6,0.1,0.1,0.1,0.1) at Stage 3 (i==2)
+				if (j==0) mu_beta[i][j]=0.6;			// Behavior policy: mu=(0.6,0.1,0.1,0.1,0.1) at Stage 3 (i==2)
 				else mu_beta[i][j]=0.1;
 			}
-			else mu_beta[i][j]=1.0/action_num[i];			// Behavior policy: mu=(1/3,1/3,1/3) at Stage 1 and Stage 2
-			nu_beta[i][j]=1.0/action_num[i];				// Behavior policy: nu is uniform policy at all 3 stages
+			else mu_beta[i][j]=1.0/action_num[i];			// Behavior policy: mu=(1/2,1/2) at Stage 1 (i==0) and Stage 2 (i==1)
+			nu_beta[i][j]=1.0/action_num[i];			// Behavior policy: nu is uniform policy at all 3 stages
 			l[i][j]=max(0.0,mu_beta[i][j]-delta);
 			r[i][j]=min(1.0,mu_beta[i][j]+delta);
 			mu[i][j]=mu_beta[i][j];
 			nu[i][j]=nu_beta[i][j];
 		}
 	}
+	rho[0]=1.0;
+	rho[1]=mu_beta[0][0]*nu_beta[0][0]+mu_beta[0][1]*nu_beta[0][1];
+	rho[2]=mu_beta[0][0]*nu_beta[0][1]+mu_beta[0][1]*nu_beta[0][0];
+	// Note that the result in the CED paper is under rho[0/1/2]=1.0 (reduced to ED setting for a direct comparison)
 }
 
 double calc_V(int num){
@@ -56,12 +61,12 @@ double calc_V(int num){
 	return ret;
 }
 
-void adjust_mu(int num){									// Applying direct policy constraint by forcing mu to be in the range
+void adjust_mu(int num){							// Applying direct policy constraint by forcing mu to be in the range
 	double ok[action_max],s;
 	for (int i=0;i<action_num[num];i++)
 		ok[i]=true;
 	int cnt=action_num[num];
-	while (true){											// Iterative adjustment under lower bound l
+	while (true){								// Iterative adjustment under lower bound l
 		s=0.0;
 		for (int i=0;i<action_num[num];i++){
 			if (ok[i]&&mu[num][i]<=l[num][i]){
@@ -77,7 +82,7 @@ void adjust_mu(int num){									// Applying direct policy constraint by forcing
 	}
 	s=0.0;
 	for (int i=0;i<action_num[num];i++)
-		if (mu[num][i]>r[num][i]){							// At most one i satisfies the condition since r>0.5
+		if (mu[num][i]>r[num][i]){					// At most one i satisfies the condition since r>0.5
 			s=mu[num][i]-r[num][i];
 			mu[num][i]=r[num][i];
 		}
@@ -86,7 +91,7 @@ void adjust_mu(int num){									// Applying direct policy constraint by forcing
 			mu[num][i]+=s/(action_num[num]-1);
 }
 
-void update_mu(int num){									// Policy update under direct policy constraint
+void update_mu(int num){							// Policy update under direct policy constraint
 	double p[action_max],s=0.0;
 	for (int i=0;i<action_num[num];i++){
 		p[i]=0.0;
@@ -96,11 +101,11 @@ void update_mu(int num){									// Policy update under direct policy constraint
 	}
 	s/=action_num[num];
 	for (int i=0;i<action_num[num];i++)
-		mu[num][i]+=alpha*(p[i]-s);
-	adjust_mu(num);											// Better projection implementation could also be used to replace this simple one
+		mu[num][i]+=alpha*rho[num]*(p[i]-s);				// Following Lemma 5.5 in the CED paper
+	adjust_mu(num);
 }
 
-void update_nu(int num){									// Policy update under indirect policy penalty
+void update_nu(int num){							// Policy update under indirect policy penalty
 	double p[action_max],s=0.0;
 	for (int i=0;i<action_num[num];i++){
 		p[i]=0.0;
@@ -131,14 +136,14 @@ int main(){
 	output();
 	printf("\n");
 	printf("Applying CED ... \n");
-	for (int i=1;i<=T;i++){									// Main loop of CED
+	for (int i=1;i<=T;i++){							// Main loop of CED
 		double temp[stage_num];
 		for (int j=0;j<stage_num;j++) temp[j]=calc_V(j);
 		for (int j=0;j<stage_num;j++)
 			for (int a=0;a<action_num[j];a++)
 				for (int b=0;b<action_num[j];b++){
 					Q[j][a][b]=R[j][a][b];
-					if (j>0) continue;						// Only Stage 1 (j==0) is not leaf node
+					if (j>0) continue;			// Only Stage 1 (j==0) is not a leaf node
 					if (a==b) Q[j][a][b]+=temp[1];
 					else Q[j][a][b]+=temp[2];
 				}
