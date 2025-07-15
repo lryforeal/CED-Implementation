@@ -6,7 +6,7 @@ The directory "tree_form_game" contains a basic C++ implementation of tabular CE
 
 The directory "robotic_combat_game" contains a Python implementation of CED with graph neural networks in this large-scale two-team adversarial game. This directory also contains the comparative methods of behavior cloning and offline self-play.
 
-<img width="4959" height="3138" alt="combat" src="https://github.com/user-attachments/assets/ca96e760-82da-44ea-b6ef-73ce128ff6ea" />
+<img width="6000" height="3600" alt="combat" src="https://github.com/user-attachments/assets/c242be9f-09b5-4b11-9135-afa025622381" />
 
 Reference:
 
