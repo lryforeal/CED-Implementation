@@ -4,7 +4,7 @@ This repository contains an offline reinforcement learning algorithm for finding
 
 The directory "tree_form_game" contains a basic C++ implementation of tabular CED in this 3-stage small-scale Markov game (where Stage 3 is a 5-action Rock-Paper-Scissors-Fire-Water matrix game).
 
-The directory "robotic_combat_game" contains a Python implementation of CED (combined with a GNN-based representation of multi-agent policy) in this large-scale two-team adversarial game. It also contains the comparative methods of behavior cloning and offline self-play. Below is an illustration of the robotic combat game (Team Square vs. Team Circle).
+The directory "robotic_combat_game" contains a Python implementation of CED (combined with a GNN-based representation of multi-agent policy) in this large-scale two-team adversarial game (Team Square vs. Team Circle). It also includes the comparative methods of behavior cloning and offline self-play.
 
 <img width="6000" height="3600" alt="combat" src="https://github.com/user-attachments/assets/c242be9f-09b5-4b11-9135-afa025622381" />
 
