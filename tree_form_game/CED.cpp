@@ -1,3 +1,5 @@
+/* An implementation of tabular CED */
+
 #include <bits/stdc++.h>
 
 using namespace std;
