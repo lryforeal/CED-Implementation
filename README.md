@@ -6,7 +6,7 @@ The directory "tree_form_game" contains the basic C++ implementation of tabular 
 
 The directory "robotic_combat_game" contains a Python implementation of CED (under a GNN-based representation of multi-agent policy) in this large-scale two-team adversarial game (Team Square vs. Team Circle). The directory also includes the comparative methods of behavior cloning and offline self-play.
 
-<img width="3000" height="1800" alt="combat" src="https://github.com/user-attachments/assets/c242be9f-09b5-4b11-9135-afa025622381" />
+<img width="6000" height="3600" alt="combat" src="https://github.com/user-attachments/assets/c242be9f-09b5-4b11-9135-afa025622381" />
 
 Reference:
 
